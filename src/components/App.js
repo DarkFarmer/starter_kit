@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import logo from '../logo.png';
 import './App.css';
 import Color from '../abis/Color.json'
+import { transferPromiseness } from 'chai-as-promised';
 class App extends Component {
 
   async componentWillMount() {
@@ -39,8 +40,17 @@ class App extends Component {
 
       for(var i = 1; i <= totalSupply; i++) {
 				const color = await contract.methods.colors(i - 1).call()
+        
 				this.setState ({
           colors: [...this.state.colors, color]
+        })
+			}
+      
+      for(var i = 1; i <= totalSupply; i++) {
+				const owner = await contract.methods.ownerOf(i).call()
+        
+				this.setState ({
+          owners: [...this.state.owners, owner]
         })
 			}
       
@@ -68,12 +78,13 @@ class App extends Component {
       account: '',
       contract: null,
       totalSupply:0,
-      colors: [] 
+      colors: [],
+      owners: [] 
     }
     
   }
-
   render() {
+    console.log("owners was " + this.state.owners.length);
     return (
       <div>
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -122,9 +133,13 @@ class App extends Component {
           <hr/>
           <div className="row text-center">
             {this.state.colors.map((color, key) => {
-                return(<div key={key} className = "col-md-3 mb-3">
+                var _owner  = ""
+                if(this.state.owners[key])
+                  _owner = this.state.owners[key].substring(0,5);
+                return(<div key={key} className = "col-md-4 mb-2">
                   <div className = "token" style = {{backgroundColor: color}}></div>
                   <div>{color}</div>
+                  <div>{_owner}</div>
                   </div>)
           })}
           </div>

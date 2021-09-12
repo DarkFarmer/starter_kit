@@ -7,6 +7,7 @@ import "./ERC721Full.sol";
 
 contract Color is ERC721Enumerable {
 	string[] public colors;
+
 	mapping(string => bool) _colorExists;
 
 	constructor() ERC721("Color", "COLOR") {
